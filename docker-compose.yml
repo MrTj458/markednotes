@@ -1,0 +1,27 @@
+version: '3.9'
+
+services:
+  app:
+    build: .
+    command: go run cmd/markednotes/main.go
+    volumes: 
+      - .:/app
+    ports: 
+      - "3000:3000"
+    environment:
+      - DATABASE_URL=postgres://postgres:postgres@db:5432/markednotes
+    depends_on:
+      - db
+
+  db:
+    image: postgres:alpine
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=markednotes
+      - POSTGRES_PASSWORD=postgres
+
+volumes:
+  db_data:
