@@ -3,13 +3,14 @@ version: '3.9'
 services:
   app:
     build: .
-    command: go run cmd/markednotes/main.go
+    command: reflex -r '(\.go$$|go\.mod)' -s go run cmd/markednotes/main.go
     volumes: 
       - .:/app
     ports: 
-      - "3000:3000"
+      - "8080:8080"
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/markednotes
+      - PORT=8080
     depends_on:
       - db
 
