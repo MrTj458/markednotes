@@ -1,6 +1,8 @@
 package web
 
 import (
+	"encoding/json"
+	"io"
 	"log"
 	"net/http"
 	"strconv"
@@ -40,4 +42,42 @@ func NewServer(port int) *Server {
 func (s *Server) Run() error {
 	log.Println("Starting server on port:", s.Port)
 	return http.ListenAndServe(":"+strconv.Itoa(s.Port), s.mux)
+}
+
+func (s *Server) decodeJSON(w http.ResponseWriter, r io.Reader, out any) {
+	dec := json.NewDecoder(r)
+	if err := dec.Decode(out); err != nil {
+		s.renderErr(w, http.StatusBadRequest, "Invalid JSON received.")
+	}
+}
+
+func (s *Server) renderJSON(w http.ResponseWriter, status int, data any) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(status)
+
+	enc := json.NewEncoder(w)
+	enc.SetEscapeHTML(true)
+	enc.Encode(data)
+}
+
+func (s *Server) renderErr(w http.ResponseWriter, status int, detail string) {
+	res := markednotes.Error{
+		StatusCode: status,
+		Detail:     detail,
+		Fields:     make([]markednotes.ErrorField, 0),
+	}
+	s.renderJSON(w, status, res)
+}
+
+func (s *Server) renderErrFields(w http.ResponseWriter, status int, detail string, fields []markednotes.ErrorField) {
+	res := markednotes.Error{
+		StatusCode: status,
+		Detail:     detail,
+		Fields:     fields,
+	}
+	s.renderJSON(w, status, res)
+}
+
+func (s *Server) renderErrInternal(w http.ResponseWriter) {
+	s.renderErr(w, http.StatusInternalServerError, "Internal server error.")
 }

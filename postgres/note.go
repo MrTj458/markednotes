@@ -5,7 +5,7 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-var _ markednotes.UserService = (*NoteService)(nil)
+var _ markednotes.NoteService = (*NoteService)(nil)
 
 type NoteService struct {
 	db *pgx.Conn

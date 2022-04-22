@@ -5,7 +5,7 @@ import (
 	"github.com/jackc/pgx/v4"
 )
 
-var _ markednotes.UserService = (*FolderService)(nil)
+var _ markednotes.FolderService = (*FolderService)(nil)
 
 type FolderService struct {
 	db *pgx.Conn
