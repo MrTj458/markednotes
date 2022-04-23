@@ -197,8 +197,7 @@ func (us *UserService) CheckInUse(user markednotes.User) ([]markednotes.ErrorFie
 		if user.Username == u.Username {
 			newErr := markednotes.ErrorField{
 				Name:   "username",
-				Type:   "string",
-				Detail: fmt.Sprintf("Username '%s' is already in use.", user.Username),
+				Detail: fmt.Sprintf("username '%s' is already in use", user.Username),
 			}
 			errors = append(errors, newErr)
 		}
@@ -206,8 +205,7 @@ func (us *UserService) CheckInUse(user markednotes.User) ([]markednotes.ErrorFie
 		if user.Email == u.Email {
 			newErr := markednotes.ErrorField{
 				Name:   "email",
-				Type:   "string",
-				Detail: fmt.Sprintf("Email '%s' is already in use.", user.Email),
+				Detail: fmt.Sprintf("email '%s' is already in use", user.Email),
 			}
 			errors = append(errors, newErr)
 		}

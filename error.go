@@ -10,13 +10,12 @@ var (
 )
 
 type Error struct {
-	StatusCode int
-	Detail     string
-	Fields     []ErrorField
+	StatusCode int          `json:"status_code"`
+	Detail     string       `json:"detail"`
+	Fields     []ErrorField `json:"fields"`
 }
 
 type ErrorField struct {
-	Name   string
-	Type   string
-	Detail string
+	Name   string `json:"name"`
+	Detail string `json:"detail"`
 }

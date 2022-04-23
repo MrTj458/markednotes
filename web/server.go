@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/MrTj458/markednotes"
+	"github.com/MrTj458/markednotes/validator"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -16,6 +17,7 @@ type Server struct {
 	Port int
 	mux  *chi.Mux
 
+	Validator     validator.Validator
 	UserService   markednotes.UserService
 	NoteService   markednotes.NoteService
 	FolderService markednotes.FolderService
@@ -47,7 +49,7 @@ func (s *Server) Run() error {
 func (s *Server) decodeJSON(w http.ResponseWriter, r io.Reader, out any) {
 	dec := json.NewDecoder(r)
 	if err := dec.Decode(out); err != nil {
-		s.renderErr(w, http.StatusBadRequest, "Invalid JSON received.")
+		s.renderErr(w, http.StatusBadRequest, "invalid JSON received")
 	}
 }
 
@@ -79,5 +81,5 @@ func (s *Server) renderErrFields(w http.ResponseWriter, status int, detail strin
 }
 
 func (s *Server) renderErrInternal(w http.ResponseWriter) {
-	s.renderErr(w, http.StatusInternalServerError, "Internal server error.")
+	s.renderErr(w, http.StatusInternalServerError, "internal server error")
 }

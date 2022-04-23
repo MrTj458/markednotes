@@ -41,7 +41,7 @@ func (s *Server) handleUserByID(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		switch err {
 		case markednotes.ErrNotFound:
-			s.renderErr(w, http.StatusNotFound, fmt.Sprintf("User with ID '%d' not found.", id))
+			s.renderErr(w, http.StatusNotFound, fmt.Sprintf("user with ID '%d' not found", id))
 		default:
 			s.renderErrInternal(w)
 		}
@@ -52,21 +52,32 @@ func (s *Server) handleUserByID(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleUsersCreate(w http.ResponseWriter, r *http.Request) {
-	var userIn markednotes.UserIn
+	type UserIn struct {
+		Username string `json:"username" validate:"min=2,max=15"`
+		Email    string `json:"email" validate:"email"`
+		Password string `json:"password" validate:"min=6"`
+	}
+
+	var userIn UserIn
 	s.decodeJSON(w, r.Body, &userIn)
 
 	// Validate
-	if errors, ok := userIn.Validate(); !ok {
-		s.renderErrFields(w, http.StatusBadRequest, "Invalid user received.", errors)
+	if errors, ok := s.Validator.Struct(userIn); !ok {
+		s.renderErrFields(w, http.StatusBadRequest, "invalid user received", errors)
 		return
 	}
-	user := userIn.ToUser()
+
+	user := markednotes.User{
+		Username: userIn.Username,
+		Email:    userIn.Email,
+		Password: userIn.Password,
+	}
 
 	// Check if email or username is in use
 	if errors, err := s.UserService.CheckInUse(user); err != nil {
 		switch err {
 		case markednotes.ErrInUse:
-			s.renderErrFields(w, http.StatusBadRequest, "Invalid user received.", errors)
+			s.renderErrFields(w, http.StatusBadRequest, "invalid user received", errors)
 		default:
 			s.renderErrInternal(w)
 		}
