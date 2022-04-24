@@ -26,7 +26,7 @@ func New() Validator {
 	return Validator{v}
 }
 
-func (v *Validator) Struct(s any) ([]markednotes.ErrorField, bool) {
+func (v Validator) Struct(s any) ([]markednotes.ErrorField, bool) {
 	err := v.validate.Struct(s)
 	if err != nil {
 		errors := []markednotes.ErrorField{}

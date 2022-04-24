@@ -8,7 +8,6 @@ import (
 	"strconv"
 
 	"github.com/MrTj458/markednotes"
-	"github.com/MrTj458/markednotes/validator"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
 )
@@ -17,7 +16,8 @@ type Server struct {
 	Port int
 	mux  *chi.Mux
 
-	Validator     validator.Validator
+	Validator markednotes.Validator
+
 	UserService   markednotes.UserService
 	NoteService   markednotes.NoteService
 	FolderService markednotes.FolderService
