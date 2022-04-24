@@ -94,11 +94,11 @@ func (s *Server) handleUsersCreate(w http.ResponseWriter, r *http.Request) {
 	user.Password = string(hashed)
 
 	// Add user to DB
-	newUser, err := s.UserService.Add(user)
+	err = s.UserService.Add(&user)
 	if err != nil {
 		s.renderErrInternal(w)
 		return
 	}
 
-	s.renderJSON(w, http.StatusCreated, newUser)
+	s.renderJSON(w, http.StatusCreated, user)
 }

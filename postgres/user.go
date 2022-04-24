@@ -22,7 +22,7 @@ func NewUserService(db *pgx.Conn) *UserService {
 	}
 }
 
-func (us *UserService) Add(user markednotes.User) (markednotes.User, error) {
+func (us *UserService) Add(user *markednotes.User) error {
 	sql := `
 		INSERT INTO users (username, email, password, created_at, updated_at)
 		VALUES ($1, $2, $3, $4, $4)
@@ -36,10 +36,10 @@ func (us *UserService) Add(user markednotes.User) (markednotes.User, error) {
 	err := row.Scan(&user.ID, &user.CreatedAt, &user.UpdatedAt)
 	if err != nil {
 		log.Println("UserService.Add:", err)
-		return markednotes.User{}, markednotes.ErrInternal
+		return markednotes.ErrInternal
 	}
 
-	return user, nil
+	return nil
 }
 
 func (us *UserService) All() ([]markednotes.User, error) {
