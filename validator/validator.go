@@ -12,6 +12,7 @@ type Validator struct {
 	validate *validator.Validate
 }
 
+// New returns a new Validator that uses the struct's JSON tags.
 func New() Validator {
 	v := validator.New()
 
@@ -26,6 +27,8 @@ func New() Validator {
 	return Validator{v}
 }
 
+// Struct validates the given struct based on the validator tags and returns
+// a list of errors found and whether or not the struct is valid.
 func (v Validator) Struct(s any) ([]markednotes.ErrorField, bool) {
 	err := v.validate.Struct(s)
 	if err != nil {

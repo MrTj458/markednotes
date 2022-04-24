@@ -22,6 +22,8 @@ func NewUserService(db *pgx.Conn) *UserService {
 	}
 }
 
+// Add creates a new row in the database sing the values from the given User.
+// It adds all of the generated fields to the passed in User.
 func (us *UserService) Add(user *markednotes.User) error {
 	sql := `
 		INSERT INTO users (username, email, password, created_at, updated_at)
@@ -42,6 +44,7 @@ func (us *UserService) Add(user *markednotes.User) error {
 	return nil
 }
 
+// All returns all of the User's that are stored in the database.
 func (us *UserService) All() ([]markednotes.User, error) {
 	sql := `
 		SELECT * FROM users
@@ -75,6 +78,7 @@ func (us *UserService) All() ([]markednotes.User, error) {
 	return users, nil
 }
 
+// ByID returns a User with the given ID.
 func (us *UserService) ByID(id int) (markednotes.User, error) {
 	sql := `
 		SELECT * FROM users
@@ -105,6 +109,7 @@ func (us *UserService) ByID(id int) (markednotes.User, error) {
 	return u, nil
 }
 
+// ByEmail returns a User with the given email.
 func (us *UserService) ByEmail(email string) (markednotes.User, error) {
 	sql := `
 		SELECT * FROM users
@@ -135,6 +140,7 @@ func (us *UserService) ByEmail(email string) (markednotes.User, error) {
 	return u, nil
 }
 
+// ByUsername returns a User with the given username.
 func (us *UserService) ByUsername(username string) (markednotes.User, error) {
 	sql := `
 		SELECT * FROM users
@@ -165,6 +171,8 @@ func (us *UserService) ByUsername(username string) (markednotes.User, error) {
 	return u, nil
 }
 
+// CheckInUse checks the email and username of the passed in user to make sure
+// neither of them are already in use.
 func (us *UserService) CheckInUse(user markednotes.User) ([]markednotes.ErrorField, error) {
 	sql := `
 		SELECT * FROM users

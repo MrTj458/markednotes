@@ -23,6 +23,7 @@ type Server struct {
 	FolderService markednotes.FolderService
 }
 
+// NewServer creates a new Server instance with preconfigured values.
 func NewServer(port int) *Server {
 	s := &Server{
 		mux:  chi.NewMux(),
@@ -41,11 +42,14 @@ func NewServer(port int) *Server {
 	return s
 }
 
+// Run starts the server
 func (s *Server) Run() error {
 	log.Println("Starting server on port:", s.Port)
 	return http.ListenAndServe(":"+strconv.Itoa(s.Port), s.mux)
 }
 
+// decodeJSON will decode the value in r into the given struct out. It will
+// send a 400 bad request if the JSON can't be decoded.
 func (s *Server) decodeJSON(w http.ResponseWriter, r io.Reader, out any) {
 	dec := json.NewDecoder(r)
 	if err := dec.Decode(out); err != nil {
@@ -53,6 +57,8 @@ func (s *Server) decodeJSON(w http.ResponseWriter, r io.Reader, out any) {
 	}
 }
 
+// renderJSON takes in a status code and a struct and encodes it into the given
+// http.ResponseWriter.
 func (s *Server) renderJSON(w http.ResponseWriter, status int, data any) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)
@@ -62,6 +68,7 @@ func (s *Server) renderJSON(w http.ResponseWriter, status int, data any) {
 	enc.Encode(data)
 }
 
+// renderErr will send a JSON formatted error response.
 func (s *Server) renderErr(w http.ResponseWriter, status int, detail string) {
 	res := markednotes.Error{
 		StatusCode: status,
@@ -71,6 +78,8 @@ func (s *Server) renderErr(w http.ResponseWriter, status int, detail string) {
 	s.renderJSON(w, status, res)
 }
 
+// renderErrFields will send a JSON formatted error response, along with the
+// given slice of error fields.
 func (s *Server) renderErrFields(w http.ResponseWriter, status int, detail string, fields []markednotes.ErrorField) {
 	res := markednotes.Error{
 		StatusCode: status,
@@ -80,6 +89,7 @@ func (s *Server) renderErrFields(w http.ResponseWriter, status int, detail strin
 	s.renderJSON(w, status, res)
 }
 
+// renderErrInternal is a shortcut to return a 500 internal server error.
 func (s *Server) renderErrInternal(w http.ResponseWriter) {
 	s.renderErr(w, http.StatusInternalServerError, "internal server error")
 }
