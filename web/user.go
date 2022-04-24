@@ -58,8 +58,12 @@ func (s *Server) handleUsersCreate(w http.ResponseWriter, r *http.Request) {
 		Password string `json:"password" validate:"min=6"`
 	}
 
+	// Decode JSON
 	var userIn UserIn
-	s.decodeJSON(w, r.Body, &userIn)
+	if err := s.decodeJSON(w, r.Body, &userIn); err != nil {
+		s.renderErr(w, http.StatusBadRequest, "invalid JSON received")
+		return
+	}
 
 	// Validate
 	if errors, ok := s.Validator.Struct(userIn); !ok {

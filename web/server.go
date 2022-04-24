@@ -48,13 +48,13 @@ func (s *Server) Run() error {
 	return http.ListenAndServe(":"+strconv.Itoa(s.Port), s.mux)
 }
 
-// decodeJSON will decode the value in r into the given struct out. It will
-// send a 400 bad request if the JSON can't be decoded.
-func (s *Server) decodeJSON(w http.ResponseWriter, r io.Reader, out any) {
+// decodeJSON will decode the value in r into the given struct out.
+func (s *Server) decodeJSON(w http.ResponseWriter, r io.Reader, out any) error {
 	dec := json.NewDecoder(r)
 	if err := dec.Decode(out); err != nil {
-		s.renderErr(w, http.StatusBadRequest, "invalid JSON received")
+		return err
 	}
+	return nil
 }
 
 // renderJSON takes in a status code and a struct and encodes it into the given
