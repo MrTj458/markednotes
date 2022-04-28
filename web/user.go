@@ -16,6 +16,13 @@ func (s *Server) addTodoRoutes() {
 		r.Post("/", s.handleUsersCreate)
 		r.Get("/", s.handleUsersIndex)
 		r.Get("/{id}", s.handleUserByID)
+		r.Post("/login", s.handleUserLogin)
+
+		// Authenticated routes
+		r.Group(func(a chi.Router) {
+			a.Use(s.requireAuth)
+			a.Get("/me", s.handleUserMe)
+		})
 	})
 }
 
@@ -104,5 +111,77 @@ func (s *Server) handleUsersCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.renderJSON(w, http.StatusCreated, user)
+	// Generate JWT
+	token, err := s.Jwt.NewToken(user.ID)
+	if err != nil {
+		log.Println("JWT:", err)
+		s.renderErrInternal(w)
+		return
+	}
+
+	res := map[string]any{
+		"token": token,
+		"user":  user,
+	}
+
+	s.renderJSON(w, http.StatusCreated, res)
+}
+
+func (s *Server) handleUserLogin(w http.ResponseWriter, r *http.Request) {
+	type UserIn struct {
+		Email    string `json:"email" validate:"email"`
+		Password string `json:"password" validate:"min=6"`
+	}
+
+	// Decode JSON
+	var userIn UserIn
+	if err := s.decodeJSON(w, r.Body, &userIn); err != nil {
+		s.renderErr(w, http.StatusBadRequest, "invalid JSON received")
+		return
+	}
+
+	// Validate
+	if errors, ok := s.Validator.Struct(userIn); !ok {
+		s.renderErrFields(w, http.StatusBadRequest, "invalid user received", errors)
+		return
+	}
+
+	// Find user with given email
+	user, err := s.UserService.ByEmail(userIn.Email)
+	if err != nil {
+		switch err {
+		case markednotes.ErrNotFound:
+			s.renderErr(w, http.StatusUnauthorized, "invalid email or password")
+			return
+		default:
+			s.renderErrInternal(w)
+			return
+		}
+	}
+
+	// Compare passwords
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userIn.Password))
+	if err != nil {
+		s.renderErr(w, http.StatusUnauthorized, "invalid email or password")
+		return
+	}
+
+	// Generate JWT
+	token, err := s.Jwt.NewToken(user.ID)
+	if err != nil {
+		s.renderErrInternal(w)
+		return
+	}
+
+	res := map[string]any{
+		"token": token,
+		"user":  user,
+	}
+
+	s.renderJSON(w, http.StatusOK, res)
+}
+
+func (s *Server) handleUserMe(w http.ResponseWriter, r *http.Request) {
+	user := r.Context().Value(markednotes.User{}).(markednotes.User)
+	s.renderJSON(w, http.StatusOK, user)
 }

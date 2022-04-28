@@ -11,6 +11,7 @@ services:
     environment:
       - DATABASE_URL=postgres://postgres:postgres@db:5432/markednotes
       - PORT=8080
+      - SIGNING_KEY=supersecretkey
     depends_on:
       - db
 

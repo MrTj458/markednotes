@@ -17,6 +17,7 @@ type Server struct {
 	mux  *chi.Mux
 
 	Validator markednotes.Validator
+	Jwt       markednotes.Jwt
 
 	UserService   markednotes.UserService
 	NoteService   markednotes.NoteService
