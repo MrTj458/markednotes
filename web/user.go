@@ -11,7 +11,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-func (s *Server) addTodoRoutes() {
+func (s *Server) addUserRoutes() {
 	s.mux.Route("/api/users", func(r chi.Router) {
 		r.Post("/", s.handleUsersCreate)
 		r.Get("/", s.handleUsersIndex)

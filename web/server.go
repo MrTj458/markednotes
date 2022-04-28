@@ -36,7 +36,7 @@ func NewServer(port int) *Server {
 	s.mux.Use(middleware.Recoverer)
 
 	// Add Routes
-	s.addTodoRoutes()
+	s.addUserRoutes()
 	s.addNoteRoutes()
 	s.addFoldersRoutes()
 
