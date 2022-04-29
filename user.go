@@ -7,7 +7,7 @@ import (
 type UserService interface {
 	Add(*User) error
 	All() ([]User, error)
-	ByID(id int) (User, error)
+	ByID(int) (User, error)
 	ByEmail(string) (User, error)
 	ByUsername(string) (User, error)
 	CheckInUse(User) ([]ErrorField, error)

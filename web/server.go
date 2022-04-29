@@ -94,3 +94,7 @@ func (s *Server) renderErrFields(w http.ResponseWriter, status int, detail strin
 func (s *Server) renderErrInternal(w http.ResponseWriter) {
 	s.renderErr(w, http.StatusInternalServerError, "internal server error")
 }
+
+func (s *Server) getUserFromRequest(r *http.Request) markednotes.User {
+	return r.Context().Value(markednotes.User{}).(markednotes.User)
+}

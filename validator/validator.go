@@ -36,7 +36,7 @@ func (v Validator) Struct(s any) ([]markednotes.ErrorField, bool) {
 		for _, err := range err.(validator.ValidationErrors) {
 			newErr := markednotes.ErrorField{
 				Name:   err.Field(),
-				Detail: "invalid " + err.Tag(),
+				Detail: err.Tag(),
 			}
 
 			if len(err.Param()) > 0 {
