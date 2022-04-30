@@ -1,7 +1,6 @@
 package web
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -33,7 +32,7 @@ func (s *Server) handleFoldersIndex(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleFoldersCreate(w http.ResponseWriter, r *http.Request) {
-	user := r.Context().Value(markednotes.User{}).(markednotes.User)
+	user := s.getUserFromRequest(r)
 
 	type FolderIn struct {
 		ParentID *int   `json:"parent_id"`
@@ -63,12 +62,7 @@ func (s *Server) handleFoldersCreate(w http.ResponseWriter, r *http.Request) {
 	if folder.ParentID != nil {
 		f, err := s.FolderService.ByID(*folder.ParentID)
 		if err != nil {
-			switch err {
-			case markednotes.ErrNotFound:
-				s.renderErr(w, http.StatusNotFound, fmt.Sprintf("parent folder with id '%v' not found", *folder.ParentID))
-			default:
-				s.renderErrInternal(w)
-			}
+			s.renderNotFoundOrInternal(w, err)
 			return
 		}
 
@@ -100,12 +94,7 @@ func (s *Server) handleFolderById(w http.ResponseWriter, r *http.Request) {
 
 	folder, err := s.FolderService.ByID(id)
 	if err != nil {
-		switch err {
-		case markednotes.ErrNotFound:
-			s.renderErr(w, http.StatusNotFound, fmt.Sprintf("folder with ID '%d' not found", id))
-		default:
-			s.renderErrInternal(w)
-		}
+		s.renderNotFoundOrInternal(w, err)
 		return
 	}
 
@@ -149,12 +138,7 @@ func (s *Server) handleFolderUpdate(w http.ResponseWriter, r *http.Request) {
 	// Get folder
 	folder, err := s.FolderService.ByID(id)
 	if err != nil {
-		switch err {
-		case markednotes.ErrNotFound:
-			s.renderErr(w, http.StatusNotFound, fmt.Sprintf("folder with ID '%d' not found", id))
-		default:
-			s.renderErrInternal(w)
-		}
+		s.renderNotFoundOrInternal(w, err)
 		return
 	}
 
@@ -188,12 +172,7 @@ func (s *Server) handleFoldersDelete(w http.ResponseWriter, r *http.Request) {
 
 	folder, err := s.FolderService.ByID(id)
 	if err != nil {
-		switch err {
-		case markednotes.ErrNotFound:
-			s.renderErr(w, http.StatusNotFound, fmt.Sprintf("folder with ID '%d' not found", id))
-		default:
-			s.renderErrInternal(w)
-		}
+		s.renderNotFoundOrInternal(w, err)
 		return
 	}
 

@@ -1,7 +1,6 @@
 package web
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -46,12 +45,7 @@ func (s *Server) handleUserByID(w http.ResponseWriter, r *http.Request) {
 
 	user, err := s.UserService.ByID(id)
 	if err != nil {
-		switch err {
-		case markednotes.ErrNotFound:
-			s.renderErr(w, http.StatusNotFound, fmt.Sprintf("user with ID '%d' not found", id))
-		default:
-			s.renderErrInternal(w)
-		}
+		s.renderNotFoundOrInternal(w, err)
 		return
 	}
 
@@ -152,11 +146,10 @@ func (s *Server) handleUserLogin(w http.ResponseWriter, r *http.Request) {
 		switch err {
 		case markednotes.ErrNotFound:
 			s.renderErr(w, http.StatusUnauthorized, "invalid email or password")
-			return
 		default:
 			s.renderErrInternal(w)
-			return
 		}
+		return
 	}
 
 	// Compare passwords
@@ -182,6 +175,6 @@ func (s *Server) handleUserLogin(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) handleUserMe(w http.ResponseWriter, r *http.Request) {
-	user := r.Context().Value(markednotes.User{}).(markednotes.User)
+	user := s.getUserFromRequest(r)
 	s.renderJSON(w, http.StatusOK, user)
 }

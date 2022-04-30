@@ -95,6 +95,15 @@ func (s *Server) renderErrInternal(w http.ResponseWriter) {
 	s.renderErr(w, http.StatusInternalServerError, "internal server error")
 }
 
+func (s *Server) renderNotFoundOrInternal(w http.ResponseWriter, e error) {
+	switch e {
+	case markednotes.ErrNotFound:
+		s.renderErr(w, http.StatusNotFound, "not found")
+	default:
+		s.renderErrInternal(w)
+	}
+}
+
 func (s *Server) getUserFromRequest(r *http.Request) markednotes.User {
 	return r.Context().Value(markednotes.User{}).(markednotes.User)
 }

@@ -1,7 +1,6 @@
 package web
 
 import (
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -65,12 +64,7 @@ func (s *Server) handleNotesCreate(w http.ResponseWriter, r *http.Request) {
 	if note.FolderID != nil {
 		f, err := s.FolderService.ByID(*note.FolderID)
 		if err != nil {
-			switch err {
-			case markednotes.ErrNotFound:
-				s.renderErr(w, http.StatusNotFound, fmt.Sprintf("folder with id '%v' not found", *note.FolderID))
-			default:
-				s.renderErrInternal(w)
-			}
+			s.renderNotFoundOrInternal(w, err)
 			return
 		}
 
@@ -102,12 +96,7 @@ func (s *Server) handleNoteById(w http.ResponseWriter, r *http.Request) {
 
 	note, err := s.NoteService.ByID(id)
 	if err != nil {
-		switch err {
-		case markednotes.ErrNotFound:
-			s.renderErr(w, http.StatusNotFound, fmt.Sprintf("note with ID '%d' not found", id))
-		default:
-			s.renderErrInternal(w)
-		}
+		s.renderNotFoundOrInternal(w, err)
 		return
 	}
 
@@ -152,12 +141,7 @@ func (s *Server) handleNoteUpdate(w http.ResponseWriter, r *http.Request) {
 	// Get note
 	note, err := s.NoteService.ByID(id)
 	if err != nil {
-		switch err {
-		case markednotes.ErrNotFound:
-			s.renderErr(w, http.StatusNotFound, fmt.Sprintf("note with ID '%d' not found", id))
-		default:
-			s.renderErrInternal(w)
-		}
+		s.renderNotFoundOrInternal(w, err)
 		return
 	}
 
@@ -192,12 +176,7 @@ func (s *Server) handleNoteDelete(w http.ResponseWriter, r *http.Request) {
 
 	note, err := s.NoteService.ByID(id)
 	if err != nil {
-		switch err {
-		case markednotes.ErrNotFound:
-			s.renderErr(w, http.StatusNotFound, fmt.Sprintf("note with ID '%d' not found", id))
-		default:
-			s.renderErrInternal(w)
-		}
+		s.renderNotFoundOrInternal(w, err)
 		return
 	}
 
