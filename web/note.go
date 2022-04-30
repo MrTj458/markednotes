@@ -61,6 +61,25 @@ func (s *Server) handleNotesCreate(w http.ResponseWriter, r *http.Request) {
 		Body:     noteIn.Body,
 	}
 
+	// Check folder permissions
+	if note.FolderID != nil {
+		f, err := s.FolderService.ByID(*note.FolderID)
+		if err != nil {
+			switch err {
+			case markednotes.ErrNotFound:
+				s.renderErr(w, http.StatusNotFound, fmt.Sprintf("folder with id '%v' not found", *note.FolderID))
+			default:
+				s.renderErrInternal(w)
+			}
+			return
+		}
+
+		if f.UserID != user.ID {
+			s.renderErr(w, http.StatusForbidden, "you do not own that folder")
+			return
+		}
+	}
+
 	// Add note to DB
 	err := s.NoteService.Add(&note)
 	if err != nil {

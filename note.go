@@ -3,13 +3,13 @@ package markednotes
 import "time"
 
 type Note struct {
-	ID        int
-	UserID    int
-	FolderID  *int
-	Name      string
-	Body      string
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID        int       `json:"id"`
+	UserID    int       `json:"user_id"`
+	FolderID  *int      `json:"folder_id"`
+	Name      string    `json:"name"`
+	Body      string    `json:"body"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
 }
 
 type NoteService interface {

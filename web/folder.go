@@ -59,6 +59,25 @@ func (s *Server) handleFoldersCreate(w http.ResponseWriter, r *http.Request) {
 		Name:     folderIn.Name,
 	}
 
+	// Check parent permissions
+	if folder.ParentID != nil {
+		f, err := s.FolderService.ByID(*folder.ParentID)
+		if err != nil {
+			switch err {
+			case markednotes.ErrNotFound:
+				s.renderErr(w, http.StatusNotFound, fmt.Sprintf("parent folder with id '%v' not found", *folder.ParentID))
+			default:
+				s.renderErrInternal(w)
+			}
+			return
+		}
+
+		if f.UserID != user.ID {
+			s.renderErr(w, http.StatusForbidden, "you do not own that parent folder")
+			return
+		}
+	}
+
 	// Add folder to DB
 	err := s.FolderService.Add(&folder)
 	if err != nil {
