@@ -59,7 +59,7 @@ func (s *Server) handleFoldersCreate(w http.ResponseWriter, r *http.Request) {
 		Name:     folderIn.Name,
 	}
 
-	// Add user to DB
+	// Add folder to DB
 	err := s.FolderService.Add(&folder)
 	if err != nil {
 		s.renderErrInternal(w)
