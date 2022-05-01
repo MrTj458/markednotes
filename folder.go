@@ -16,6 +16,8 @@ type FolderService interface {
 	All() ([]Folder, error)
 	ByID(int) (Folder, error)
 	ByUser(int) ([]Folder, error)
+	ByParent(int) ([]Folder, error)
+	ByUserRoot(int) ([]Folder, error)
 	Update(*Folder) error
 	Delete(int) error
 }

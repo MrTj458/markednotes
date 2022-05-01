@@ -141,6 +141,41 @@ func (ns *NoteService) ByUser(userId int) ([]markednotes.Note, error) {
 	return notes, nil
 }
 
+func (ns *NoteService) ByUserRoot(userId int) ([]markednotes.Note, error) {
+	sql := `
+		SELECT * FROM notes
+		WHERE user_id = $1 and folder_id IS NULL
+	`
+
+	rows, err := ns.db.Query(context.Background(), sql, userId)
+	if err != nil {
+		log.Println("NoteService.ByUser:", err)
+		return nil, markednotes.ErrInternal
+	}
+	defer rows.Close()
+
+	notes := make([]markednotes.Note, 0)
+	for rows.Next() {
+		var n markednotes.Note
+		err = rows.Scan(
+			&n.ID,
+			&n.UserID,
+			&n.FolderID,
+			&n.Name,
+			&n.Body,
+			&n.CreatedAt,
+			&n.UpdatedAt,
+		)
+		if err != nil {
+			log.Println("NoteService.ByUser:", err)
+			return nil, markednotes.ErrInternal
+		}
+		notes = append(notes, n)
+	}
+
+	return notes, nil
+}
+
 func (ns *NoteService) ByFolder(folderId int) ([]markednotes.Note, error) {
 	sql := `
 		SELECT * FROM notes

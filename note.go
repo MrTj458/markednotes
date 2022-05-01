@@ -18,6 +18,7 @@ type NoteService interface {
 	ByID(int) (Note, error)
 	ByUser(int) ([]Note, error)
 	ByFolder(int) ([]Note, error)
+	ByUserRoot(int) ([]Note, error)
 	Update(*Note) error
 	Delete(int) error
 }

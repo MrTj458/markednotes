@@ -22,10 +22,45 @@ func (s *Server) addNoteRoutes() {
 func (s *Server) handleNotesIndex(w http.ResponseWriter, r *http.Request) {
 	user := s.getUserFromRequest(r)
 
-	notes, err := s.NoteService.ByUser(user.ID)
-	if err != nil {
-		s.renderErrInternal(w)
-		return
+	var notes []markednotes.Note
+
+	// Check for folder query param
+	query := r.URL.Query().Get("folder")
+	if len(query) > 0 {
+		// Convert to int
+		folderID, err := strconv.Atoi(query)
+		if err != nil {
+			s.renderErr(w, http.StatusBadRequest, "invalid folder ID provided")
+			return
+		}
+
+		// Get the folder trying to search for
+		f, err := s.FolderService.ByID(folderID)
+		if err != nil {
+			s.renderNotFoundOrInternal(w, err)
+			return
+		}
+
+		// Check permissions
+		if f.UserID != user.ID {
+			s.renderErr(w, http.StatusForbidden, "you don't own that folder")
+			return
+		}
+
+		// Get notes for that folder
+		notes, err = s.NoteService.ByFolder(folderID)
+		if err != nil {
+			s.renderErrInternal(w)
+			return
+		}
+	} else {
+		// Get notes at the root folder
+		var err error
+		notes, err = s.NoteService.ByUserRoot(user.ID)
+		if err != nil {
+			s.renderErrInternal(w)
+			return
+		}
 	}
 
 	s.renderJSON(w, http.StatusOK, notes)

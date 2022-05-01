@@ -22,10 +22,45 @@ func (s *Server) addFoldersRoutes() {
 func (s *Server) handleFoldersIndex(w http.ResponseWriter, r *http.Request) {
 	user := s.getUserFromRequest(r)
 
-	folders, err := s.FolderService.ByUser(user.ID)
-	if err != nil {
-		s.renderErrInternal(w)
-		return
+	var folders []markednotes.Folder
+
+	// Get parent search query
+	query := r.URL.Query().Get("parent")
+	if len(query) > 0 {
+		// Convert to int
+		parentID, err := strconv.Atoi(query)
+		if err != nil {
+			s.renderErr(w, http.StatusBadRequest, "invalid parent ID provided")
+			return
+		}
+
+		// Get parent folder
+		f, err := s.FolderService.ByID(parentID)
+		if err != nil {
+			s.renderNotFoundOrInternal(w, err)
+			return
+		}
+
+		// Check permissions
+		if f.UserID != user.ID {
+			s.renderErr(w, http.StatusForbidden, "you don't own that folder")
+			return
+		}
+
+		// Get subfolders
+		folders, err = s.FolderService.ByParent(parentID)
+		if err != nil {
+			s.renderErrInternal(w)
+			return
+		}
+	} else {
+		// Get folders at root
+		var err error
+		folders, err = s.FolderService.ByUserRoot(user.ID)
+		if err != nil {
+			s.renderErrInternal(w)
+			return
+		}
 	}
 
 	s.renderJSON(w, http.StatusOK, folders)

@@ -138,6 +138,74 @@ func (fs *FolderService) ByUser(userId int) ([]markednotes.Folder, error) {
 	return folders, nil
 }
 
+func (fs *FolderService) ByParent(parentID int) ([]markednotes.Folder, error) {
+	sql := `
+		SELECT * FROM folders
+		WHERE parent_id = $1
+	`
+
+	rows, err := fs.db.Query(context.Background(), sql, parentID)
+	if err != nil {
+		log.Println("FolderService.ByParent:", err)
+		return nil, markednotes.ErrInternal
+	}
+	defer rows.Close()
+
+	folders := make([]markednotes.Folder, 0)
+	for rows.Next() {
+		var f markednotes.Folder
+		err = rows.Scan(
+			&f.ID,
+			&f.ParentID,
+			&f.UserID,
+			&f.Name,
+			&f.CreatedAt,
+			&f.UpdatedAt,
+		)
+		if err != nil {
+			log.Println("FolderService.ByUser:", err)
+			return nil, markednotes.ErrInternal
+		}
+		folders = append(folders, f)
+	}
+
+	return folders, nil
+}
+
+func (fs *FolderService) ByUserRoot(userID int) ([]markednotes.Folder, error) {
+	sql := `
+		SELECT * FROM folders
+		WHERE user_id = $1 and parent_id is NULL
+	`
+
+	rows, err := fs.db.Query(context.Background(), sql, userID)
+	if err != nil {
+		log.Println("FolderService.ByUserRoot:", err)
+		return nil, markednotes.ErrInternal
+	}
+	defer rows.Close()
+
+	folders := make([]markednotes.Folder, 0)
+	for rows.Next() {
+		var f markednotes.Folder
+		err = rows.Scan(
+			&f.ID,
+			&f.ParentID,
+			&f.UserID,
+			&f.Name,
+			&f.CreatedAt,
+			&f.UpdatedAt,
+		)
+		if err != nil {
+			log.Println("FolderService.ByUser:", err)
+			return nil, markednotes.ErrInternal
+		}
+		folders = append(folders, f)
+	}
+
+	return folders, nil
+}
+
 func (fs *FolderService) Update(folder *markednotes.Folder) error {
 	sql := `
 		UPDATE folders
