@@ -22,7 +22,6 @@ export const useUserStore = defineStore({
         this.error = null;
         this.loading = false;
       } catch (e) {
-        console.error("error logging in:", e);
         this.user = null;
         this.error = "Invalid email or password.";
         this.loading = false;

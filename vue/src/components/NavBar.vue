@@ -1,3 +1,17 @@
+<script setup>
+import { useRouter } from "vue-router";
+import { useUserStore } from "../stores/user";
+
+const router = useRouter();
+const user = useUserStore();
+
+const signOut = async () => {
+  await router.push({ name: "home" });
+  localStorage.removeItem("token");
+  window.location.reload();
+};
+</script>
+
 <template>
   <nav class="nav-bar">
     <ul class="nav-list">
@@ -7,7 +21,12 @@
         >
       </li>
     </ul>
-    <ul class="nav-list">
+    <ul v-if="user.user" class="nav-list">
+      <li>
+        <button @click="signOut" class="nav-item">Sign Out</button>
+      </li>
+    </ul>
+    <ul v-else class="nav-list">
       <li>
         <RouterLink :to="{ name: 'login' }" class="nav-item">Login</RouterLink>
       </li>
@@ -19,8 +38,6 @@
     </ul>
   </nav>
 </template>
-
-<script setup></script>
 
 <style>
 .nav-bar {
@@ -45,5 +62,8 @@
   color: var(--white-color);
   border-radius: 4px;
   padding: 0.25rem 0.5rem;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 </style>
