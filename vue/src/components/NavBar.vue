@@ -26,10 +26,8 @@
 .nav-bar {
   background-color: var(--orange-color);
   display: flex;
-  justify-content: center;
   align-items: center;
   width: 100%;
-  display: flex;
   justify-content: space-between;
   padding: 1rem 2rem;
 }

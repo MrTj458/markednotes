@@ -42,9 +42,4 @@ body {
 a {
   color: var(--blue-color);
 }
-
-.container {
-  width: 100%;
-  max-width: 1100px;
-}
 </style>
