@@ -27,5 +27,23 @@ export const useUserStore = defineStore({
         this.loading = false;
       }
     },
+    async register(email, username, password) {
+      try {
+        this.loading = true;
+        const res = await axios.post("/api/users", {
+          email,
+          username,
+          password,
+        });
+        localStorage.setItem("token", res.data.token);
+        this.user = res.data.user;
+        this.error = null;
+        this.loading = false;
+      } catch (e) {
+        this.user = null;
+        this.error = "";
+        this.loading = false;
+      }
+    },
   },
 });

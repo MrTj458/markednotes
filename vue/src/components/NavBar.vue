@@ -65,5 +65,8 @@ const signOut = async () => {
   background: none;
   border: none;
   cursor: pointer;
+  display: block;
+  margin: 0;
+  width: auto;
 }
 </style>
