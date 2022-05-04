@@ -7,15 +7,16 @@ import (
 
 	"github.com/MrTj458/markednotes"
 	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 var _ markednotes.FolderService = (*FolderService)(nil)
 
 type FolderService struct {
-	db *pgx.Conn
+	db *pgxpool.Pool
 }
 
-func NewFolderService(db *pgx.Conn) *FolderService {
+func NewFolderService(db *pgxpool.Pool) *FolderService {
 	return &FolderService{
 		db: db,
 	}

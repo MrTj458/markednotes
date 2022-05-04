@@ -8,15 +8,16 @@ import (
 
 	"github.com/MrTj458/markednotes"
 	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 var _ markednotes.UserService = (*UserService)(nil)
 
 type UserService struct {
-	db *pgx.Conn
+	db *pgxpool.Pool
 }
 
-func NewUserService(db *pgx.Conn) *UserService {
+func NewUserService(db *pgxpool.Pool) *UserService {
 	return &UserService{
 		db: db,
 	}

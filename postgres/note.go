@@ -7,15 +7,16 @@ import (
 
 	"github.com/MrTj458/markednotes"
 	"github.com/jackc/pgx/v4"
+	"github.com/jackc/pgx/v4/pgxpool"
 )
 
 var _ markednotes.NoteService = (*NoteService)(nil)
 
 type NoteService struct {
-	db *pgx.Conn
+	db *pgxpool.Pool
 }
 
-func NewNoteService(db *pgx.Conn) *NoteService {
+func NewNoteService(db *pgxpool.Pool) *NoteService {
 	return &NoteService{
 		db: db,
 	}

@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"log"
 	"os"
 	"strconv"
@@ -17,7 +16,7 @@ func main() {
 	if err != nil {
 		log.Fatal("error connecting to database:", err)
 	}
-	defer db.Close(context.Background())
+	defer db.Close()
 
 	port, err := strconv.Atoi(os.Getenv("PORT"))
 	if err != nil {
