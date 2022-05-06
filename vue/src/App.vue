@@ -13,6 +13,7 @@ import NavBar from "./components/NavBar.vue";
 @import url("https://fonts.googleapis.com/css2?family=Nunito:wght@200;300;400;600;700;800;900&display=swap");
 
 :root {
+  --light-gray-color: #59585a;
   --gray-color: #403e41;
   --white-color: #e7e6f7;
   --blue-color: #39a2ae;
@@ -41,5 +42,9 @@ body {
 
 a {
   color: var(--blue-color);
+}
+
+ul {
+  list-style-type: none;
 }
 </style>

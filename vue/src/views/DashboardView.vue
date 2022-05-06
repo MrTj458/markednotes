@@ -1,12 +1,20 @@
-<template>
-  <h1>Dashboard</h1>
-  <p>{{ user.user }}</p>
-</template>
-
 <script setup>
-import { useUserStore } from "../stores/user";
-
-const user = useUserStore();
+import FileExplorer from "../components/FileExplorer.vue";
 </script>
 
-<style></style>
+<template>
+  <main>
+    <FileExplorer />
+    <textarea class="input"></textarea>
+  </main>
+</template>
+
+<style scoped>
+main {
+  display: flex;
+}
+
+.input {
+  width: 100%;
+}
+</style>
