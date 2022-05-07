@@ -5,10 +5,12 @@ import NoteItem from "./NoteItem.vue";
 import TrashIcon from "./icons/TrashIcon.vue";
 import NewFolderIcon from "./icons/NewFolderIcon.vue";
 import NewFileIcon from "./icons/NewFileIcon.vue";
+import NewNoteForm from "../components/NewNoteForm.vue";
 
 const props = defineProps(["folder"]);
 const { folder } = toRefs(props);
 
+const newNote = ref(false);
 const open = ref(false);
 const folders = ref([]);
 const notes = ref([]);
@@ -19,6 +21,17 @@ onMounted(async () => {
   res = await axios.get(`/api/notes?folder=${folder.value.id}`);
   notes.value = res.data;
 });
+
+const addNote = (note) => {
+  if (note === null) {
+    newNote.value = false;
+    return;
+  }
+  console.log(notes.value);
+  notes.value = [...notes.value, note];
+  newNote.value = false;
+  console.log(notes.value);
+};
 </script>
 
 <template>
@@ -28,8 +41,10 @@ onMounted(async () => {
         <p class="name-text">{{ open ? "v" : ">" }} {{ folder.name }}</p>
       </div>
       <div class="options">
-        <button class="btn"><NewFileIcon /></button>
-        <button class="btn"><NewFolderIcon /></button>
+        <button v-if="open" @click="newNote = true" class="btn">
+          <NewFileIcon />
+        </button>
+        <button v-if="open" class="btn"><NewFolderIcon /></button>
         <button class="btn"><TrashIcon /></button>
       </div>
     </div>
@@ -37,8 +52,12 @@ onMounted(async () => {
       <li v-for="folder in folders" :key="folder.id">
         <FolderItem :folder="folder" />
       </li>
+
       <li v-for="note in notes" :key="note.id">
         <NoteItem :note="note" />
+      </li>
+      <li v-if="newNote">
+        <NewNoteForm :folderId="folder.id" :addNote="addNote" />
       </li>
     </ul>
   </div>

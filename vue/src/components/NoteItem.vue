@@ -8,7 +8,7 @@ const { note } = toRefs(props);
 <template>
   <div class="container">
     <div class="title">
-      <div @click="open = !open" class="name">
+      <div class="name">
         <p class="name-text">{{ note.name }}</p>
       </div>
       <div class="options">
@@ -40,6 +40,7 @@ const { note } = toRefs(props);
   font-weight: bold;
   flex-grow: 1;
   height: 100%;
+  margin-right: 1rem;
 }
 
 .options {

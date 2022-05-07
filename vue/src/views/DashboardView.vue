@@ -5,7 +5,7 @@ import FileExplorer from "../components/FileExplorer.vue";
 <template>
   <main>
     <FileExplorer />
-    <textarea class="input"></textarea>
+    <!-- <textarea class="input"></textarea> -->
   </main>
 </template>
 
