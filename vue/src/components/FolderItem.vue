@@ -2,6 +2,9 @@
 import { toRefs, onMounted, ref } from "vue";
 import axios from "axios";
 import NoteItem from "./NoteItem.vue";
+import TrashIcon from "./icons/TrashIcon.vue";
+import NewFolderIcon from "./icons/NewFolderIcon.vue";
+import NewFileIcon from "./icons/NewFileIcon.vue";
 
 const props = defineProps(["folder"]);
 const { folder } = toRefs(props);
@@ -25,9 +28,9 @@ onMounted(async () => {
         <p class="name-text">{{ open ? "v" : ">" }} {{ folder.name }}</p>
       </div>
       <div class="options">
-        <button class="btn">+</button>
-        <button class="btn">+</button>
-        <button class="btn">x</button>
+        <button class="btn"><NewFileIcon /></button>
+        <button class="btn"><NewFolderIcon /></button>
+        <button class="btn"><TrashIcon /></button>
       </div>
     </div>
     <ul v-if="open" class="indent">

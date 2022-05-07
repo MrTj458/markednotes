@@ -1,4 +1,5 @@
 <script setup>
+import TrashIcon from "./icons/TrashIcon.vue";
 import { toRefs } from "vue";
 const props = defineProps(["note"]);
 const { note } = toRefs(props);
@@ -11,9 +12,7 @@ const { note } = toRefs(props);
         <p class="name-text">{{ note.name }}</p>
       </div>
       <div class="options">
-        <button class="btn">+</button>
-        <button class="btn">+</button>
-        <button class="btn">x</button>
+        <button class="btn"><TrashIcon /></button>
       </div>
     </div>
   </div>
