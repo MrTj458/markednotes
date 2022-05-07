@@ -27,10 +27,12 @@ const addNote = (note) => {
     newNote.value = false;
     return;
   }
-  console.log(notes.value);
   notes.value = [...notes.value, note];
   newNote.value = false;
-  console.log(notes.value);
+};
+
+const deleteNote = (id) => {
+  notes.value = notes.value.filter((note) => note.id !== id);
 };
 </script>
 
@@ -54,7 +56,7 @@ const addNote = (note) => {
       </li>
 
       <li v-for="note in notes" :key="note.id">
-        <NoteItem :note="note" />
+        <NoteItem :note="note" :deleteNote="deleteNote" />
       </li>
       <li v-if="newNote">
         <NewNoteForm :folderId="folder.id" :addNote="addNote" />

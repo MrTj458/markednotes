@@ -1,8 +1,19 @@
 <script setup>
 import TrashIcon from "./icons/TrashIcon.vue";
 import { toRefs } from "vue";
-const props = defineProps(["note"]);
+import axios from "axios";
+
+const props = defineProps(["note", "deleteNote"]);
 const { note } = toRefs(props);
+
+const deleteNote = async () => {
+  try {
+    await axios.delete(`/api/notes/${note.value.id}`);
+    props.deleteNote(note.value.id);
+  } catch (e) {
+    console.error(e);
+  }
+};
 </script>
 
 <template>
@@ -12,7 +23,7 @@ const { note } = toRefs(props);
         <p class="name-text">{{ note.name }}</p>
       </div>
       <div class="options">
-        <button class="btn"><TrashIcon /></button>
+        <button @click="deleteNote" class="btn"><TrashIcon /></button>
       </div>
     </div>
   </div>
