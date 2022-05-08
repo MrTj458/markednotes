@@ -63,7 +63,7 @@ const handleSubmit = async () => {
   </main>
 </template>
 
-<style>
+<style scoped>
 main {
   margin-top: 2rem;
   width: 100%;

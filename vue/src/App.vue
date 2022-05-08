@@ -23,16 +23,11 @@ import NotificationViewer from "./components/NotificationViewer.vue";
   --yellow-color: #dda448;
 }
 
-*,
-*::before,
-*::after {
+* {
+  font-family: "Nunito", sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-}
-
-* {
-  font-family: "Nunito", sans-serif;
 }
 
 body {
@@ -44,9 +39,5 @@ body {
 
 a {
   color: var(--blue-color);
-}
-
-ul {
-  list-style-type: none;
 }
 </style>

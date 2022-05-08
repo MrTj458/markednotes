@@ -35,4 +35,8 @@ onMounted(async () => {
   padding: 1rem;
   gap: 2rem;
 }
+
+ul {
+  list-style-type: none;
+}
 </style>

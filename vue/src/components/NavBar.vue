@@ -23,6 +23,11 @@ const signOut = async () => {
     </ul>
     <ul v-if="user.user" class="nav-list">
       <li>
+        <RouterLink :to="{ name: 'dashboard' }" class="nav-item"
+          >Dashboard</RouterLink
+        >
+      </li>
+      <li>
         <button @click="signOut" class="nav-item">Sign Out</button>
       </li>
     </ul>
@@ -39,7 +44,7 @@ const signOut = async () => {
   </nav>
 </template>
 
-<style>
+<style scoped>
 .nav-bar {
   background-color: var(--orange-color);
   display: flex;

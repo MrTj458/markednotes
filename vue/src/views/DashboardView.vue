@@ -1,11 +1,12 @@
 <script setup>
 import FileExplorer from "../components/FileExplorer.vue";
+import NoteViewer from "../components/NoteViewer.vue";
 </script>
 
 <template>
   <main>
     <FileExplorer />
-    <!-- <textarea class="input"></textarea> -->
+    <NoteViewer />
   </main>
 </template>
 

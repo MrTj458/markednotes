@@ -3,11 +3,13 @@ import TrashIcon from "./icons/TrashIcon.vue";
 import { toRefs } from "vue";
 import axios from "axios";
 import { useNotificationStore } from "../stores/notification";
+import { useNoteStore } from "../stores/note";
 
 const props = defineProps(["note", "deleteNote"]);
 const { note } = toRefs(props);
 
 const notify = useNotificationStore();
+const noteStore = useNoteStore();
 
 const deleteNote = async () => {
   try {
@@ -24,7 +26,7 @@ const deleteNote = async () => {
 <template>
   <div class="container">
     <div class="title">
-      <div class="name">
+      <div class="name" @click="noteStore.note = note">
         <p class="name-text">{{ note.name }}</p>
       </div>
       <div class="options">
