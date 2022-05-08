@@ -106,4 +106,8 @@ const deleteNote = (id) => {
 .btn:hover {
   color: var(--orange-color);
 }
+
+ul {
+  list-style-type: none;
+}
 </style>
