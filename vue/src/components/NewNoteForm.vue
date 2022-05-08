@@ -1,10 +1,13 @@
 <script setup>
 import axios from "axios";
 import { ref, toRefs, onMounted } from "vue";
+import { useNotificationStore } from "../stores/notification";
 import TrashIcon from "./icons/TrashIcon.vue";
 
 const props = defineProps(["folderId", "addNote"]);
 const { folderId } = toRefs(props);
+
+const notify = useNotificationStore();
 
 const inputRef = ref(null);
 const name = ref("");
@@ -15,14 +18,24 @@ onMounted(() => {
 
 const onSubmit = async () => {
   try {
+    if (name.value.length < 1) {
+      notify.error("Note name must be at least 1 character.");
+      return;
+    } else if (name.value.length > 30) {
+      notify.error("Note name cannot be greater than 30 characters.");
+      return;
+    }
+
     const res = await axios.post("/api/notes", {
       folder_id: folderId.value,
       name: name.value,
     });
     props.addNote(res.data);
+    notify.success("Note created.");
     name.value = "";
   } catch (e) {
     console.error(e);
+    notify.error("Error creating new note.");
   }
 };
 

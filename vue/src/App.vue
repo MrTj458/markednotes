@@ -1,8 +1,10 @@
 <script setup>
 import NavBar from "./components/NavBar.vue";
+import NotificationViewer from "./components/NotificationViewer.vue";
 </script>
 
 <template>
+  <NotificationViewer />
   <header>
     <NavBar />
   </header>

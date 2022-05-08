@@ -2,16 +2,21 @@
 import TrashIcon from "./icons/TrashIcon.vue";
 import { toRefs } from "vue";
 import axios from "axios";
+import { useNotificationStore } from "../stores/notification";
 
 const props = defineProps(["note", "deleteNote"]);
 const { note } = toRefs(props);
+
+const notify = useNotificationStore();
 
 const deleteNote = async () => {
   try {
     await axios.delete(`/api/notes/${note.value.id}`);
     props.deleteNote(note.value.id);
+    notify.success("Note deleted.");
   } catch (e) {
     console.error(e);
+    notify.error("Error deleting note.");
   }
 };
 </script>
