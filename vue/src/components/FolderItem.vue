@@ -6,6 +6,8 @@ import TrashIcon from "./icons/TrashIcon.vue";
 import NewFolderIcon from "./icons/NewFolderIcon.vue";
 import NewFileIcon from "./icons/NewFileIcon.vue";
 import NewNoteForm from "../components/NewNoteForm.vue";
+import OpenIcon from "./icons/OpenIcon.vue";
+import ClosedIcon from "./icons/ClosedIcon.vue";
 
 const props = defineProps(["folder"]);
 const { folder } = toRefs(props);
@@ -40,17 +42,23 @@ const deleteNote = (id) => {
   <div class="container">
     <div class="title">
       <div @click="open = !open" class="name">
-        <p class="name-text">{{ open ? "v" : ">" }} {{ folder.name }}</p>
+        <p :class="{ 'name-text': true, root: folder.id === '' }">
+          <OpenIcon v-if="open" />
+          <ClosedIcon v-else />
+          {{ folder.name }}
+        </p>
       </div>
+
       <div class="options">
         <button v-if="open" @click="newNote = true" class="btn">
           <NewFileIcon />
         </button>
         <button v-if="open" class="btn"><NewFolderIcon /></button>
-        <button class="btn"><TrashIcon /></button>
+        <button v-if="folder.id !== ''" class="btn"><TrashIcon /></button>
       </div>
     </div>
-    <ul v-if="open" class="indent">
+
+    <ul v-if="open">
       <li v-for="folder in folders" :key="folder.id">
         <FolderItem :folder="folder" />
       </li>
@@ -58,6 +66,7 @@ const deleteNote = (id) => {
       <li v-for="note in notes" :key="note.id">
         <NoteItem :note="note" :deleteNote="deleteNote" />
       </li>
+
       <li v-if="newNote">
         <NewNoteForm :folderId="folder.id" :addNote="addNote" />
       </li>
@@ -78,6 +87,10 @@ const deleteNote = (id) => {
   cursor: pointer;
 }
 
+.root {
+  font-size: 1.4rem;
+}
+
 .title:hover {
   color: var(--orange-color);
 }
@@ -87,6 +100,11 @@ const deleteNote = (id) => {
   flex-grow: 1;
   height: 100%;
   padding: 0.25rem 0;
+}
+
+.name-text {
+  display: flex;
+  align-items: center;
 }
 
 .options {

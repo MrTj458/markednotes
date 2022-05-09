@@ -40,9 +40,11 @@ router.beforeEach(async (to) => {
       try {
         const res = await axios.get("/api/users/me");
         user.user = res.data;
+        user.error = null;
       } catch (e) {
         localStorage.removeItem("token");
         user.user = null;
+        user.error = null;
       }
     }
 

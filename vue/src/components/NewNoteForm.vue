@@ -27,7 +27,7 @@ const onSubmit = async () => {
     }
 
     const res = await axios.post("/api/notes", {
-      folder_id: folderId.value,
+      folder_id: folderId.value ? folderId.value : null,
       name: name.value,
     });
     props.addNote(res.data);

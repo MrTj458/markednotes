@@ -1,7 +1,7 @@
 import { defineStore } from "pinia";
 
 export const useNoteStore = defineStore({
-  id: "user",
+  id: "note",
   state: () => ({
     note: null,
   }),

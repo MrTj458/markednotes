@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { v4 as uuid } from "uuid";
 
 export const useNotificationStore = defineStore({
-  id: "user",
+  id: "notification",
   state: () => ({
     notifications: [],
   }),
