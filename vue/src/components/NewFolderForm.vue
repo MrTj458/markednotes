@@ -52,7 +52,7 @@ const cancel = () => {
           <input
             v-model="name"
             class="name-input"
-            placeholder="New Note Name"
+            placeholder="New Folder Name"
             ref="inputRef"
           />
         </form>
