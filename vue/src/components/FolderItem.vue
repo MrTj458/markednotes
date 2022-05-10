@@ -8,11 +8,16 @@ import NewFileIcon from "./icons/NewFileIcon.vue";
 import NewNoteForm from "../components/NewNoteForm.vue";
 import OpenIcon from "./icons/OpenIcon.vue";
 import ClosedIcon from "./icons/ClosedIcon.vue";
+import NewFolderForm from "../components/NewFolderForm.vue";
+import { useNotificationStore } from "../stores/notification";
 
-const props = defineProps(["folder"]);
+const props = defineProps(["folder", "removeChild"]);
 const { folder } = toRefs(props);
 
+const notify = useNotificationStore();
+
 const newNote = ref(false);
+const newFolder = ref(false);
 const open = ref(false);
 const folders = ref([]);
 const notes = ref([]);
@@ -33,6 +38,30 @@ const addNote = (note) => {
   newNote.value = false;
 };
 
+const addFolder = (folder) => {
+  if (folder === null) {
+    newFolder.value = false;
+    return;
+  }
+  folders.value = [...folders.value, folder];
+  newFolder.value = false;
+};
+
+const removeChild = (id) => {
+  folders.value = folders.value.filter((f) => f.id !== id);
+};
+
+const deleteFolder = async () => {
+  try {
+    await axios.delete(`/api/folders/${folder.value.id}`);
+    props.removeChild(folder.value.id);
+    notify.success("Note deleted.");
+  } catch (e) {
+    console.error(e);
+    notify.error("Error deleting note.");
+  }
+};
+
 const deleteNote = (id) => {
   notes.value = notes.value.filter((note) => note.id !== id);
 };
@@ -50,17 +79,33 @@ const deleteNote = (id) => {
       </div>
 
       <div class="options">
-        <button v-if="open" @click="newNote = true" class="btn">
+        <button
+          @click="
+            newNote = true;
+            open = true;
+          "
+          class="btn"
+        >
           <NewFileIcon />
         </button>
-        <button v-if="open" class="btn"><NewFolderIcon /></button>
-        <button v-if="folder.id !== ''" class="btn"><TrashIcon /></button>
+        <button
+          @click="
+            newFolder = true;
+            open = true;
+          "
+          class="btn"
+        >
+          <NewFolderIcon />
+        </button>
+        <button v-if="folder.id !== ''" @click="deleteFolder" class="btn">
+          <TrashIcon />
+        </button>
       </div>
     </div>
 
     <ul v-if="open">
       <li v-for="folder in folders" :key="folder.id">
-        <FolderItem :folder="folder" />
+        <FolderItem :folder="folder" :removeChild="removeChild" />
       </li>
 
       <li v-for="note in notes" :key="note.id">
@@ -69,6 +114,10 @@ const deleteNote = (id) => {
 
       <li v-if="newNote">
         <NewNoteForm :folderId="folder.id" :addNote="addNote" />
+      </li>
+
+      <li v-if="newFolder">
+        <NewFolderForm :folderId="folder.id" :addFolder="addFolder" />
       </li>
     </ul>
   </div>

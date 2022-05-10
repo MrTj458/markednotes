@@ -71,7 +71,7 @@ func (s *Server) handleFoldersCreate(w http.ResponseWriter, r *http.Request) {
 
 	type FolderIn struct {
 		ParentID *int   `json:"parent_id"`
-		Name     string `json:"name" validate:"required,min=2,max=30"`
+		Name     string `json:"name" validate:"required,min=1,max=30"`
 	}
 
 	// Decode JSON
