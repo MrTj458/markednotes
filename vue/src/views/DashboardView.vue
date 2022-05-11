@@ -8,6 +8,7 @@ import ViewIcon from "../components/icons/ViewIcon.vue";
 import NoteEditor from "../components/NoteEditor.vue";
 import SaveIcon from "../components/icons/SaveIcon.vue";
 import { useNotificationStore } from "../stores/notification";
+import NavBar from "../components/NavBar.vue";
 
 const noteStore = useNoteStore();
 const notify = useNotificationStore();
@@ -27,8 +28,9 @@ const saveNote = async () => {
 
 <template>
   <main class="dash">
-    <FileExplorer />
-    <div class="dash-right">
+    <NavBar class="nav" />
+    <FileExplorer class="file-explorer" />
+    <div class="main">
       <div class="dash-ribbon">
         <p class="dash-title">{{ noteStore.note?.name }}</p>
         <div class="dash-options">
@@ -44,19 +46,42 @@ const saveNote = async () => {
           </button>
         </div>
       </div>
-      <NoteViewer v-if="viewing" />
-      <NoteEditor v-else />
+      <div class="viewing-area">
+        <NoteViewer v-if="viewing" />
+        <NoteEditor v-else />
+      </div>
     </div>
   </main>
 </template>
 
 <style scoped>
 .dash {
-  display: flex;
+  display: grid;
+  grid-template-areas:
+    "nav nav"
+    "side main";
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  height: 100%;
+  overflow-y: hidden;
 }
 
-.dash-right {
-  width: 100%;
+.nav {
+  grid-area: nav;
+}
+
+.file-explorer {
+  grid-area: side;
+}
+
+.main {
+  grid-area: main;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.viewing-area {
+  position: relative;
 }
 
 .dash-title {

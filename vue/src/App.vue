@@ -1,13 +1,9 @@
 <script setup>
-import NavBar from "./components/NavBar.vue";
 import NotificationViewer from "./components/NotificationViewer.vue";
 </script>
 
 <template>
   <NotificationViewer />
-  <header>
-    <NavBar />
-  </header>
   <RouterView />
 </template>
 
@@ -23,11 +19,17 @@ import NotificationViewer from "./components/NotificationViewer.vue";
   --yellow-color: #dda448;
 }
 
-* {
+*,
+*:before,
+*:after {
   font-family: "Nunito", sans-serif;
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+html {
+  height: 100%;
 }
 
 body {
@@ -35,6 +37,11 @@ body {
   line-height: 1.6;
   background-color: var(--gray-color);
   color: var(--white-color);
+  height: 100%;
+}
+
+#app {
+  height: 100%;
 }
 
 a {

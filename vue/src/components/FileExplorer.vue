@@ -22,10 +22,9 @@ const rootFolder = {
   height: 100%;
   gap: 2rem;
   padding-right: 1rem;
-  /* border: 1px solid red; */
 }
 
-ul {
+.explorer ul {
   list-style-type: none;
 }
 </style>

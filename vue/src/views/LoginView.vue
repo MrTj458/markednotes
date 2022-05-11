@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { useRouter } from "vue-router";
 import { useUserStore } from "../stores/user";
 import LoadingSpinner from "../components/LoadingSpinner.vue";
+import StandardLayout from "../components/layouts/StandardLayout.vue";
 
 const user = useUserStore();
 const router = useRouter();
@@ -19,34 +20,38 @@ const handleSubmit = async () => {
 </script>
 
 <template>
-  <main>
-    <h1>Login</h1>
-    <form @submit.prevent="handleSubmit">
-      <div class="input-group">
-        <label for="email">Email</label>
-        <input type="email" name="email" v-model="email" required autofocus />
-      </div>
-      <div class="input-group">
-        <label for="password">Password</label>
-        <input type="password" name="password" v-model="password" required />
-      </div>
-      <p v-if="user.error" class="error">{{ user.error }}</p>
-      <button type="submit" :disabled="user.loading">
-        <LoadingSpinner v-if="user.loading" />
-        <p v-else>Log In</p>
-      </button>
-      <small
-        >Need an account?
-        <RouterLink :to="{ name: 'register' }">Register Here</RouterLink></small
-      >
-    </form>
-  </main>
+  <StandardLayout>
+    <div class="container">
+      <h1>Login</h1>
+      <form @submit.prevent="handleSubmit">
+        <div class="input-group">
+          <label for="email">Email</label>
+          <input type="email" name="email" v-model="email" required autofocus />
+        </div>
+        <div class="input-group">
+          <label for="password">Password</label>
+          <input type="password" name="password" v-model="password" required />
+        </div>
+        <p v-if="user.error" class="error">{{ user.error }}</p>
+        <button type="submit" :disabled="user.loading">
+          <LoadingSpinner v-if="user.loading" />
+          <p v-else>Log In</p>
+        </button>
+        <small
+          >Need an account?
+          <RouterLink :to="{ name: 'register' }"
+            >Register Here</RouterLink
+          ></small
+        >
+      </form>
+    </div>
+  </StandardLayout>
 </template>
 
 <script setup></script>
 
 <style scoped>
-main {
+.container {
   margin-top: 2rem;
   width: 100%;
   display: flex;

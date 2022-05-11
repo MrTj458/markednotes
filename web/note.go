@@ -156,7 +156,7 @@ func (s *Server) handleNoteUpdate(w http.ResponseWriter, r *http.Request) {
 
 	type NoteIn struct {
 		FolderID *int   `json:"folder_id"`
-		Name     string `json:"name" validate:"required,min=2,max=30"`
+		Name     string `json:"name" validate:"required,min=1,max=30"`
 		Body     string `json:"body" validate:"required"`
 	}
 

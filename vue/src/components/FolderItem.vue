@@ -11,6 +11,7 @@ import ClosedIcon from "./icons/ClosedIcon.vue";
 import NewFolderForm from "../components/NewFolderForm.vue";
 import { useNotificationStore } from "../stores/notification";
 import { useNoteStore } from "../stores/note";
+import LoadingSpinner from "./LoadingSpinner.vue";
 
 const props = defineProps(["folder", "removeChild"]);
 const { folder } = toRefs(props);
@@ -18,6 +19,7 @@ const { folder } = toRefs(props);
 const notify = useNotificationStore();
 const noteStore = useNoteStore();
 
+const loading = ref(false);
 const newNote = ref(false);
 const newFolder = ref(false);
 const open = ref(false);
@@ -25,10 +27,17 @@ const folders = ref([]);
 const notes = ref([]);
 
 onMounted(async () => {
-  let res = await axios.get(`/api/folders?parent=${folder.value.id}`);
-  folders.value = res.data;
-  res = await axios.get(`/api/notes?folder=${folder.value.id}`);
-  notes.value = res.data;
+  loading.value = true;
+  try {
+    let res = await axios.get(`/api/folders?parent=${folder.value.id}`);
+    folders.value = res.data;
+    res = await axios.get(`/api/notes?folder=${folder.value.id}`);
+    notes.value = res.data;
+    loading.value = false;
+  } catch (e) {
+    notify.error("Error loading files");
+    loading.value = false;
+  }
 });
 
 const addNote = (note) => {
@@ -55,13 +64,15 @@ const removeChild = (id) => {
 
 const deleteFolder = async () => {
   try {
+    loading.value = true;
     await axios.delete(`/api/folders/${folder.value.id}`);
     props.removeChild(folder.value.id);
     noteStore.note = null;
-    notify.success("Note deleted.");
+    notify.success("Folder deleted.");
   } catch (e) {
     console.error(e);
-    notify.error("Error deleting note.");
+    loading.value = false;
+    notify.error("Error deleting folder.");
   }
 };
 
@@ -71,7 +82,7 @@ const deleteNote = (id) => {
 </script>
 
 <template>
-  <div class="container">
+  <div v-if="!loading" class="container">
     <div class="title">
       <div @click="open = !open" class="name">
         <p :class="{ 'name-text': true, root: folder.id === '' }">
@@ -106,7 +117,7 @@ const deleteNote = (id) => {
       </div>
     </div>
 
-    <ul v-if="open">
+    <ul v-if="open && !loading">
       <li v-for="folder in folders" :key="folder.id">
         <FolderItem :folder="folder" :removeChild="removeChild" />
       </li>
@@ -124,6 +135,7 @@ const deleteNote = (id) => {
       </li>
     </ul>
   </div>
+  <LoadingSpinner v-else :white="true" class="container" />
 </template>
 
 <style scoped>
@@ -152,6 +164,7 @@ const deleteNote = (id) => {
   flex-grow: 1;
   height: 100%;
   padding: 0.25rem 0;
+  padding-right: 2rem;
 }
 
 .name-text {

@@ -3,12 +3,14 @@ import axios from "axios";
 import { ref, toRefs, onMounted } from "vue";
 import { useNotificationStore } from "../stores/notification";
 import TrashIcon from "./icons/TrashIcon.vue";
+import LoadingSpinner from "./LoadingSpinner.vue";
 
 const props = defineProps(["folderId", "addFolder"]);
 const { folderId } = toRefs(props);
 
 const notify = useNotificationStore();
 
+const loading = ref(false);
 const inputRef = ref(null);
 const name = ref("");
 
@@ -26,15 +28,18 @@ const onSubmit = async () => {
       return;
     }
 
+    loading.value = true;
     const res = await axios.post("/api/folders", {
       parent_id: folderId.value ? folderId.value : null,
       name: name.value,
     });
     props.addFolder(res.data);
+    loading.value = false;
     notify.success("Folder created.");
     name.value = "";
   } catch (e) {
     console.error(e);
+    loading.value = false;
     notify.error("Error creating new folder.");
   }
 };
@@ -45,7 +50,7 @@ const cancel = () => {
 </script>
 
 <template>
-  <div class="container">
+  <div v-if="!loading" class="container">
     <div class="title">
       <div class="name">
         <form @submit.prevent="onSubmit">
@@ -62,11 +67,12 @@ const cancel = () => {
       </div>
     </div>
   </div>
+  <LoadingSpinner v-else :white="true" />
 </template>
 
 <style scoped>
 .container {
-  padding-left: 1rem;
+  margin-left: 1.5rem;
 }
 
 .title {
@@ -93,6 +99,11 @@ const cancel = () => {
   background-color: var(--light-gray-color);
   border: 0;
   border-radius: 4px;
+  color: var(--white-color);
+  outline: none;
+}
+
+.name-input::placeholder {
   color: var(--white-color);
 }
 

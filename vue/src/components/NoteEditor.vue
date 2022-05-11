@@ -19,16 +19,17 @@ onMounted(() => {
   ></textarea>
 </template>
 
-<style>
+<style scoped>
 .editor {
   width: 100%;
   height: 100%;
   color: var(--white-color);
   background-color: var(--light-gray-color);
   font-size: 1rem;
-  padding: 1rem 0.5rem;
+  padding: 1rem;
   resize: none;
   border: none;
   outline: none;
+  margin: 0;
 }
 </style>
