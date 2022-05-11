@@ -20,11 +20,17 @@ const parsedBody = computed(() => {
 
 <style>
 .viewer {
-  padding: 1rem 2rem;
+  padding: 1rem;
 }
 
 .viewer ul,
 .viewer ol {
   padding-left: 20px;
+}
+
+.viewer code {
+  background-color: var(--light-gray-color);
+  padding: 0.25rem;
+  border-radius: 4px;
 }
 </style>

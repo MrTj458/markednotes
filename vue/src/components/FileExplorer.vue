@@ -19,9 +19,10 @@ const rootFolder = {
 <style scoped>
 .explorer {
   border-right: 1px solid var(--light-gray-color);
-  min-width: 300px;
   height: 100%;
   gap: 2rem;
+  padding-right: 1rem;
+  /* border: 1px solid red; */
 }
 
 ul {

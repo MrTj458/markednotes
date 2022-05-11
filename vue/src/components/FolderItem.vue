@@ -10,11 +10,13 @@ import OpenIcon from "./icons/OpenIcon.vue";
 import ClosedIcon from "./icons/ClosedIcon.vue";
 import NewFolderForm from "../components/NewFolderForm.vue";
 import { useNotificationStore } from "../stores/notification";
+import { useNoteStore } from "../stores/note";
 
 const props = defineProps(["folder", "removeChild"]);
 const { folder } = toRefs(props);
 
 const notify = useNotificationStore();
+const noteStore = useNoteStore();
 
 const newNote = ref(false);
 const newFolder = ref(false);
@@ -55,6 +57,7 @@ const deleteFolder = async () => {
   try {
     await axios.delete(`/api/folders/${folder.value.id}`);
     props.removeChild(folder.value.id);
+    noteStore.note = null;
     notify.success("Note deleted.");
   } catch (e) {
     console.error(e);
@@ -160,6 +163,7 @@ const deleteNote = (id) => {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
+  margin-left: 1rem;
 }
 
 .btn {
