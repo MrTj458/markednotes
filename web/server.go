@@ -40,6 +40,9 @@ func NewServer(port int) *Server {
 	s.addNoteRoutes()
 	s.addFoldersRoutes()
 
+	// Static files
+	s.mux.Handle("/*", http.FileServer(http.Dir("static")))
+
 	return s
 }
 

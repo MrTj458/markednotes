@@ -2,8 +2,10 @@ version: '3.9'
 
 services:
   app:
-    build: .
-    command: reflex -r '(\.go$$|go\.mod)' -s go run cmd/markednotes/main.go
+    build:
+      context: .
+      target: server-build
+    command: reflex -r '(\.go$$|go\.mod)' -s go run cmd/markednotes/markednotes.go
     volumes: 
       - .:/app
     ports: 
@@ -16,7 +18,9 @@ services:
       - db
   
   vue:
-    build: ./vue
+    build:
+      context: .
+      target: client-build
     command: npm run dev
     volumes:
       - ./vue:/app
