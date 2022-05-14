@@ -35,7 +35,7 @@ const handleSubmit = async () => {
         <p v-if="user.error" class="error">{{ user.error }}</p>
         <button type="submit" :disabled="user.loading">
           <LoadingSpinner v-if="user.loading" />
-          <p v-else>Log In</p>
+          <p v-else class="btn-text">Log In</p>
         </button>
         <small
           >Need an account?
@@ -65,6 +65,11 @@ form {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.btn-text {
+  color: var(--white-color);
+  font-size: 1.4rem;
 }
 
 .error {
